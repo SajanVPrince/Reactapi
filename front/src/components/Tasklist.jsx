@@ -15,6 +15,12 @@ function TaskList(){
         setEditing(true)
         setEditDtls(task)
     }
+    const updatedtls=(id,task)=>{
+        setEditing(false)
+        axios.put(`http://127.0.0.1:8000/api/task/${id}/`,task).then(res=>{
+            setData(data.map(prv=>(prv.id===id?res.data:prv)))
+        }).catch(error=>console.log(error.message))
+    }
     return(
         <>
         <div className="container">
@@ -30,27 +36,36 @@ function TaskList(){
                     <tr key={index}>
                         <td>{value.title}</td>
                         <td>{value.dis}</td>
-                        <td><button onClick={()=>{edittask(value)}} className="btn btn-secondary">Edit</button></td>
-                        <td><button onClick={()=>{}} className="btn btn-danger">Delete</button></td>
+                        <td><button onClick={()=>{edittask(value)}} className="btn btn-outline-warning">Edit</button></td>
+                        <td><button onClick={()=>{}} className="btn btn-outline-danger">Delete</button></td>
                     </tr>
                 ))}
             </tbody>
         </table>
-        {editing ? <EditForm curTask={editDtls}/>:null}
+        {editing ? <EditForm curTask={editDtls} updatetask={updatedtls}/>:null}
         </div>
         </>
     )
 }
 
-const EditForm=({curTask})=>{
+const EditForm=({curTask,updatetask})=>{
     console.log('EditForm',curTask);
     const [task,setTask]=useState(curTask)
+
+    const handleChange=(e)=>{
+        const {name,value}=e.target
+        setTask({...task,[name]:value})
+    }
+    const handleSubmit=(e)=>{
+        e.preventDefault()
+        updatetask(task.id,task)
+    }
     return(
         <>
-        <form >
-            <input type="text" name="task" id="task" value={task.title}/>
-            <input type="text" name="dis" id="dis" value={task.dis}/>
-            <input type="submit" value="update" />
+        <form onSubmit={handleSubmit}>
+            <input type="text" name="title" id="task" value={task.title} onChange={handleChange}/>
+            <input type="text" name="dis" id="dis" value={task.dis} onChange={handleChange}/>
+            <input type="submit" value="update" className="btn btn-outline-primary" />
         </form>
         </>
     )
