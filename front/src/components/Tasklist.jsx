@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from 'axios'
+import Add from './Add'
 
 function TaskList(){
     const [data,setData]=useState([])
@@ -27,7 +28,7 @@ function TaskList(){
         <table className="table">
             <thead>
                 <tr>
-                    <th>Task</th>
+                    <th>Title</th>
                     <th>Disp</th>
                 </tr>
             </thead>
@@ -42,7 +43,7 @@ function TaskList(){
                 ))}
             </tbody>
         </table>
-        {editing ? <EditForm curTask={editDtls} updatetask={updatedtls}/>:null}
+        {editing ? <EditForm curTask={editDtls} updatetask={updatedtls}/>:<Add/>}
         </div>
         </>
     )
